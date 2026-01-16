@@ -1,0 +1,99 @@
+import json
+import os
+
+FILE_NAME = "patients.json"
+
+# Load patients from file
+def load_patients():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as f:
+            return json.load(f)
+    return []
+
+# Save patients to file
+def save_patients(patients):
+    with open(FILE_NAME, "w") as f:
+        json.dump(patients, f, indent=4)
+
+# Add new patient
+def add_patient(patients):
+    pid = input("Enter Patient ID: ")
+    name = input("Enter Patient Name: ")
+    age = input("Enter Age: ")
+    disease = input("Enter Disease: ")
+    doctor = input("Enter Doctor Name: ")
+
+    patient = {
+        "id": pid,
+        "name": name,
+        "age": age,
+        "disease": disease,
+        "doctor": doctor
+    }
+
+    patients.append(patient)
+    save_patients(patients)
+    print("✅ Patient added successfully!")
+
+# View all patients
+def view_patients(patients):
+    if not patients:
+        print("❌ No patient records found.")
+        return
+
+    print("\n--- Patient Records ---")
+    for p in patients:
+        print(f"ID: {p['id']} | Name: {p['name']} | Age: {p['age']} | "
+              f"Disease: {p['disease']} | Doctor: {p['doctor']}")
+
+# Search patient by ID
+def search_patient(patients):
+    pid = input("Enter Patient ID to search: ")
+    for p in patients:
+        if p["id"] == pid:
+            print("\n✅ Patient Found")
+            print(p)
+            return
+    print("❌ Patient not found.")
+
+# Delete patient
+def delete_patient(patients):
+    pid = input("Enter Patient ID to delete: ")
+    for p in patients:
+        if p["id"] == pid:
+            patients.remove(p)
+            save_patients(patients)
+            print("✅ Patient deleted successfully!")
+            return
+    print("❌ Patient not found.")
+
+# Main menu
+def main():
+    patients = load_patients()
+
+    while True:
+        print("\n🏥 Hospital Management System")
+        print("1. Add Patient")
+        print("2. View Patients")
+        print("3. Search Patient")
+        print("4. Delete Patient")
+        print("5. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            add_patient(patients)
+        elif choice == "2":
+            view_patients(patients)
+        elif choice == "3":
+            search_patient(patients)
+        elif choice == "4":
+            delete_patient(patients)
+        elif choice == "5":
+            print("👋 Exiting system. Thank you!")
+            break
+        else:
+            print("❌ Invalid choice. Try again.")
+
+if __name__ == "__main__":
+    main()
